@@ -4,20 +4,50 @@ using System.Linq;
 
 public class TilesManager // : MonoBehaviour
 {
-    public List<int> AllPairs = new() { 1, 2, 3 };
-    public List<int> ResultPair = new();
-    public int[,] Tiles;
+    public List<string> AllPairs = new() { "img1", "img2", "img3", "img4" };
+    public List<string> ResultPair = new();
+    public string[,] Tiles;
+    public readonly List<LevelModel> LevelSettings = new();
 
     private readonly int _rows;
     private readonly int _columns;
 
-    public TilesManager(int rows, int columns)
+    public TilesManager(GameLevel gameLevel)
     {
-        _rows = rows;
-        _columns = columns;
+        switch (gameLevel)
+        {
+            case GameLevel.Level2:
+                _rows = 5;
+                _columns = 4;
+                break;
+            case GameLevel.Level1:
+            default:
+                _rows = 4;
+                _columns = 3;
+                break;
+        }
+        LevelSettings = new List<LevelModel>
+        {
+            new LevelModel
+            {
+                Level = GameLevel.Level1,
+                Offset = 20,
+                Width = 150,
+                Rows = 4,
+                Columns = 3
+            },
+            new LevelModel
+            {
+                Level = GameLevel.Level2,
+                Offset = 10,
+                Width = 100,
+                Rows = 5,
+                Columns = 4
+            },
+        };
     }
 
-    public List<int> InitPairs()
+    public List<string> InitPairs()
     {
         int numberOfPair = _rows * _columns / 2;
         if (AllPairs.Count > numberOfPair)
@@ -38,9 +68,9 @@ public class TilesManager // : MonoBehaviour
         return ResultPair;
     }
 
-    public int[,] InitTiles()
+    public string[,] InitTiles()
     {
-        Tiles = new int[_rows, _columns];
+        Tiles = new string[_rows, _columns];
 
         int randomIndex = 0;
 
@@ -64,4 +94,23 @@ public class TilesManager // : MonoBehaviour
         InitPairs();
         InitTiles();
     }
+}
+
+public class LevelModel
+{
+    public GameLevel Level { get; set; }
+
+    public float Width { get; set; }
+
+    public float Offset { get; set; }
+
+    public int Rows { get; set; }
+
+    public int Columns { get; set; }
+}
+
+public enum GameLevel
+{
+    Level1 = 1,
+    Level2 = 2
 }
