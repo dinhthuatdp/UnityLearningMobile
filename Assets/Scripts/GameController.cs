@@ -67,6 +67,10 @@ public class GameController : MonoBehaviour
     {
         for (int i = 0; i < _boardGame.transform.childCount; i++)
         {
+            if (_boardGame.transform.GetChild(i).GetComponent<Image>().name == "Background")
+            {
+                continue;
+            }
             Destroy(_boardGame.transform.GetChild(i).gameObject);
         }
     }
@@ -113,7 +117,7 @@ public class GameController : MonoBehaviour
                     .GetComponent<Button>();
                 string val = tilesManager.Tiles[row, column];
                 btn.onClick.AddListener(delegate { TileClick(newTile, val); });
-                txt.text = val;
+                //txt.text = val;
                 newTile.transform.SetParent(_boardGame.transform, false);
             }
         }
