@@ -32,7 +32,7 @@ public class TilesManager // : MonoBehaviour
             {
                 Level = GameLevel.Level1,
                 Offset = 20,
-                Width = 150,
+                Width = 125,
                 Rows = 4,
                 Columns = 3
             },

@@ -98,8 +98,12 @@ public class GameController : MonoBehaviour
     {
         TilesManager tilesManager = new TilesManager(GameLevel);
         tilesManager.Load();
-        Vector3 startPosition = new Vector3(-240, 420, 0);
         var setting = tilesManager.LevelSettings.FirstOrDefault(x => x.Level == GameLevel);
+        Vector3 startPosition = new Vector3(-210, 350, 0);
+        if (GameLevel == GameLevel.Level2)
+        {
+            startPosition = new Vector3(-260, 355, 0);
+        }
         rows = setting.Rows;
         columns = setting.Columns;
         for (int row = 0; row < rows; row++)
