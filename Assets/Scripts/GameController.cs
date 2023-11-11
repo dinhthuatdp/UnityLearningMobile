@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -122,9 +123,11 @@ public class GameController : MonoBehaviour
             }
         }
     }
-
+    private bool isCanClickTile = true;
     private void TileClick(Image item, string value)
     {
+        if (!isCanClickTile) return;
+
         item.sprite = imgSprites[value];
         if (FirstTile is null)
         {
@@ -135,11 +138,17 @@ public class GameController : MonoBehaviour
         {
             return;
         }
-        Thread.Sleep(500);
+        // Thread.Sleep(500);
         if (FirstTile.sprite.name != item.sprite.name)
         {
-            FirstTile.sprite = bg;
-            item.sprite = bg;
+
+            StartCoroutine(_ActionDelay(0.5f, () => {
+                if (FirstTile) FirstTile.sprite = bg;
+                item.sprite = bg;
+
+                FirstTile = null;
+                isCanClickTile = true;
+            }));
         }
         else
         {
@@ -149,7 +158,15 @@ public class GameController : MonoBehaviour
             {
                 popupWin.gameObject.SetActive(true);
             }
+
+            FirstTile = null;
+            isCanClickTile = true;
         }
-        FirstTile = null;
+    }
+
+    private IEnumerator _ActionDelay(float delay, Action callback)
+    {
+        yield return new WaitForSeconds(delay);
+        callback?.Invoke();
     }
 }
