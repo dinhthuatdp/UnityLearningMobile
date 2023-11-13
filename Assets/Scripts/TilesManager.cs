@@ -12,8 +12,13 @@ public class TilesManager // : MonoBehaviour
     private readonly int _rows;
     private readonly int _columns;
 
-    public TilesManager(GameLevel gameLevel)
+    public TilesManager(GameLevel gameLevel,
+        GameType gameType)
     {
+        if (gameType == GameType.Pikachu)
+        {
+            AllPairs = new() { "p1", "p2", "p3", "p4", "p5" };
+        }
         switch (gameLevel)
         {
             case GameLevel.Level2:
@@ -113,4 +118,10 @@ public enum GameLevel
 {
     Level1 = 1,
     Level2 = 2
+}
+
+public enum GameType
+{
+    Matching = 1,
+    Pikachu = 2
 }

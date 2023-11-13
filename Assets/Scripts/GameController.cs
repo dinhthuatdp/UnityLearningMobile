@@ -17,9 +17,11 @@ public class GameController : MonoBehaviour
     [SerializeField] private Button btnLevel1;
     [SerializeField] private Button btnLevel2;
     [SerializeField] private Button btnNewGame;
+    [SerializeField] private Button btnGameType;
     private int rows;
     private int columns;
     public GameLevel GameLevel;
+    public GameType GameType;
     private Sprite bg;
     private Dictionary<string, Sprite> imgSprites = new();
     private Image FirstTile;
@@ -30,6 +32,18 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Vector3 v1 = new Vector3(-210, 2000, 0);
+        Vector3 v2 = new Vector3(2000, 350, 0);
+        LineRenderer lineRenderer = _boardGame.gameObject.AddComponent<LineRenderer>();
+        lineRenderer.positionCount = 2;
+        lineRenderer.startColor = Color.red;
+        lineRenderer.endColor = Color.red;
+        lineRenderer.sortingOrder = 1;
+        lineRenderer.SetPositions(new Vector3[] { v1, v2 });
+        //lineRenderer.transform.SetParent(_boardGame.transform, false);
+
+        btnGameType.onClick.AddListener(GameTypeClick);
+
         popupWin.gameObject.SetActive(false);
         btnNewGame.onClick.AddListener(delegate
         {
@@ -55,6 +69,10 @@ public class GameController : MonoBehaviour
         {
             imgSprites.Add($"img{i}", Resources.Load<Sprite>($"img{i}"));
         }
+        for (int i = 1; i <= 5; i++)
+        {
+            imgSprites.Add($"p{i}", Resources.Load<Sprite>($"p{i}"));
+        }
         //_tilePrefab = Resources.Load<GameObject>("Prefabs/TilePrefab");
         InitGame();
     }
@@ -62,6 +80,26 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
+
+    private void GameTypeClick()
+    {
+        var txt = btnGameType.transform.Find("Text")
+            .GetComponent<TextMeshProUGUI>();
+        if (GameType == GameType.Matching)
+        {
+            GameLevel = GameLevel.Level2;
+            txt.text = "Matching game";
+            GameType = GameType.Pikachu;
+        }
+        else
+        {
+            GameLevel = GameLevel.Level1;
+            txt.text = "Pikachu game";
+            GameType = GameType.Matching;
+        }
+        ClearBoardGame();
+        InitGame();
     }
 
     private void ClearBoardGame()
@@ -78,7 +116,6 @@ public class GameController : MonoBehaviour
 
     private void NewGameClick()
     {
-        countMatching = 0;
         ClearBoardGame();
         InitGame();
     }
@@ -96,7 +133,8 @@ public class GameController : MonoBehaviour
 
     private void InitGame()
     {
-        TilesManager tilesManager = new TilesManager(GameLevel);
+        countMatching = 0;
+        TilesManager tilesManager = new TilesManager(GameLevel, GameType);
         tilesManager.Load();
         var setting = tilesManager.LevelSettings.FirstOrDefault(x => x.Level == GameLevel);
         Vector3 startPosition = new Vector3(-210, 350, 0);
@@ -115,12 +153,19 @@ public class GameController : MonoBehaviour
                 newTile.rectTransform.position = new Vector3(startPosition.x + (setting.Width + setting.Offset + 70) * column,
                     startPosition.y - (setting.Width + setting.Offset + 70) * row,
                     startPosition.z);
-                newTile.sprite = bg;
                 var txt = newTile.transform.Find("Text")
                     .GetComponent<TextMeshProUGUI>();
                 var btn = newTile.transform.Find("Button")
                     .GetComponent<Button>();
                 string val = tilesManager.Tiles[row, column];
+                if (GameType == GameType.Matching)
+                {
+                    newTile.sprite = bg;
+                }
+                else
+                {
+                    newTile.sprite = imgSprites[val];
+                }
                 btn.onClick.AddListener(delegate { TileClick(newTile, val); });
                 //txt.text = val;
                 newTile.transform.SetParent(_boardGame.transform, false);
@@ -130,6 +175,11 @@ public class GameController : MonoBehaviour
     private bool isCanClickTile = true;
     private void TileClick(Image item, string value)
     {
+        if (GameType == GameType.Pikachu)
+        {
+            PikachuTileClick(item, value);
+            return;
+        }
         if (!isCanClickTile) return;
 
         item.sprite = imgSprites[value];
@@ -157,7 +207,6 @@ public class GameController : MonoBehaviour
         else
         {
             countMatching += 2;
-            Debug.Log(countMatching);
             if (countMatching >= (rows * columns))
             {
                 popupWin.gameObject.SetActive(true);
@@ -172,5 +221,22 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         callback?.Invoke();
+    }
+
+    private void PikachuTileClick(Image item, string value)
+    {
+        if (FirstTile is null)
+        {
+            FirstTile = item;
+            return;
+        }
+        if (FirstTile == item)
+        {
+            return;
+        }
+        if (FirstTile.sprite.name != item.sprite.name)
+        {
+            return;
+        }
     }
 }
