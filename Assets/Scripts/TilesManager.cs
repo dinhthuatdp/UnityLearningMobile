@@ -9,8 +9,8 @@ public class TilesManager // : MonoBehaviour
     public string[,] Tiles;
     public readonly List<LevelModel> LevelSettings = new();
 
-    private readonly int _rows;
-    private readonly int _columns;
+    public readonly int Rows;
+    public readonly int Columns;
 
     public TilesManager(GameLevel gameLevel,
         GameType gameType)
@@ -22,13 +22,13 @@ public class TilesManager // : MonoBehaviour
         switch (gameLevel)
         {
             case GameLevel.Level2:
-                _rows = 5;
-                _columns = 4;
+                Rows = 5;
+                Columns = 4;
                 break;
             case GameLevel.Level1:
             default:
-                _rows = 4;
-                _columns = 3;
+                Rows = 4;
+                Columns = 3;
                 break;
         }
         LevelSettings = new List<LevelModel>
@@ -54,7 +54,7 @@ public class TilesManager // : MonoBehaviour
 
     public List<string> InitPairs()
     {
-        int numberOfPair = _rows * _columns / 2;
+        int numberOfPair = Rows * Columns / 2;
         if (AllPairs.Count > numberOfPair)
         {
             ResultPair.AddRange(AllPairs.Take(numberOfPair));
@@ -75,13 +75,13 @@ public class TilesManager // : MonoBehaviour
 
     public string[,] InitTiles()
     {
-        Tiles = new string[_rows, _columns];
+        Tiles = new string[Rows, Columns];
 
         int randomIndex = 0;
 
-        for (int row = 0; row < _rows; row++)
+        for (int row = 0; row < Rows; row++)
         {
-            for (int column = 0; column < _columns; column++)
+            for (int column = 0; column < Columns; column++)
             {
                 randomIndex = UnityEngine.Random.Range(0, ResultPair.Count);
                 Tiles[row, column] = ResultPair[randomIndex];

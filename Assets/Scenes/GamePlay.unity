@@ -650,6 +650,7 @@ GameObject:
   - component: {fileID: 453170775}
   - component: {fileID: 453170774}
   - component: {fileID: 453170773}
+  - component: {fileID: 453170776}
   m_Layer: 5
   m_Name: TempTile
   m_TagString: Untagged
@@ -716,6 +717,21 @@ RectTransform:
   m_AnchoredPosition: {x: -290, y: 1650}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &453170776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453170772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.7647059, g: 0.031372547, b: 0.6766091, a: 0.5}
+  m_EffectDistance: {x: 9, y: 9}
+  m_UseGraphicAlpha: 1
 --- !u!1 &481980131
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,7 +1947,6 @@ MonoBehaviour:
   btnLevel2: {fileID: 122391238}
   btnNewGame: {fileID: 156111505}
   btnGameType: {fileID: 1287457485}
-  lineRenderer: {fileID: 0}
   GameLevel: 1
   GameType: 1
   popupWin: {fileID: 813352487}
