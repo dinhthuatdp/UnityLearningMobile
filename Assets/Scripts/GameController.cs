@@ -31,7 +31,7 @@ public class GameController : MonoBehaviour
     private int countMatching = 0;
     [SerializeField] private Canvas popupWin;
 
-    private PikachuManager _pikachuManager;
+    private PikachuManager1 _pikachuManager;
     //private Image SecondTile;
 
     // Start is called before the first frame update
@@ -88,7 +88,7 @@ public class GameController : MonoBehaviour
 
     private void InitPikachu(TilesManager tilesManager)
     {
-        _pikachuManager = new PikachuManager(tilesManager);
+        _pikachuManager = new PikachuManager1(tilesManager.Tiles);
     }
 
     // Update is called once per frame
@@ -492,24 +492,21 @@ public class GameController : MonoBehaviour
             FirstPos = null;
             return;
         }
-        var ss = _pikachuManager.CheckTwoPoint(FirstPos.Value, new Vector2(row, col));
-        Debug.Log(ss?.toString());
-        if (ss is null)
+        //var ss = _pikachuManager.FindPath((0,0),(4,4));
+        var ss = _pikachuManager.FindPath(FirstPos.Value, new Vector2(row, col));
+        if (ss != null)
         {
-            var outline = FirstTile.transform.GetComponent<Outline>();
-            var outline1 = item.transform.GetComponent<Outline>();
-            outline.enabled = false;
-            outline1.enabled = false;
+            FirstTile.gameObject.SetActive(false);
+            item.gameObject.SetActive(false);
+            item = null;
             FirstTile = null;
             FirstPos = null;
             return;
         }
-        if (_pikachuManager.CheckWin())
-        {
-            popupWin.gameObject.SetActive(true);
-        }
-        FirstTile.gameObject.SetActive(false);
-        item.gameObject.SetActive(false);
+        var outline3 = item.transform.GetComponent<Outline>();
+        var outline4 = FirstTile.transform.GetComponent<Outline>();
+        outline3.enabled = false;
+        outline4.enabled = false;
         item = null;
         FirstTile = null;
         FirstPos = null;
