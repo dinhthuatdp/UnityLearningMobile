@@ -361,24 +361,14 @@ public class PikachuManager1
             pMinY = p2;
             pMaxY = p1;
         }
-        //if (pMaxY == pMinX &&
-        //    pMinY == pMaxX)
+        if (pMaxY == pMinX &&
+            pMinY == pMaxX)
         {
-            //var checkX1 = CheckX(pMaxY, new Vector2(pMinX.x, 0));
-            //var checkX2 = CheckX(new Vector2(pMaxX.x, 0), pMinY);
-            //if (checkX1 != null &&
-            //    checkX2 != null)
-            //{
-            //    return new List<Vector2>
-            //    {
-            //        pMaxY, new Vector2(pMinX.x, 1), new Vector2(pMaxX.x, 1), pMinY
-            //    };
-            //}
             // Check left
-            for (int y = 1; y < pMinY.y; y++)
+            for (int y = 1; y <= pMinY.y; y++)
             {
                 /*
-                 * <----pMaxX, pMinX
+                 * <--------------pMaxY, pMinX
                  * |
                  * |
                  * v
@@ -391,6 +381,8 @@ public class PikachuManager1
                     check2 != null &&
                     check3 != null)
                 {
+                    Debug.Log("matched 1");
+                    Debug.Log(y);
                     return new List<Vector2>
                     {
                         pMaxY, new Vector2(pMinX.x, y), new Vector2(pMaxX.x, y), pMinY
@@ -400,13 +392,22 @@ public class PikachuManager1
             // Check right
             for (float y = pMaxY.y + 1; y < cols; y++)
             {
+                /*
+                 *      pMaxY, pMinX---->
+                 *                       |
+                 *                       |
+                 *                       v
+                 * pMinY, pMaxX<----------
+                 */
                 var check1 = CheckX(pMaxY, new Vector2(pMinX.x, y + 1));
                 var check2 = CheckY(new Vector2(pMinX.x - 1, y), new Vector2(pMaxX.x + 1, y));
-                var check3 = CheckX(new Vector2(pMaxX.x, y - 1), pMaxX);
+                var check3 = CheckX(new Vector2(pMaxX.x, y + 1), pMaxX);
                 if (check1 != null &&
                     check2 != null &&
                     check3 != null)
                 {
+                    Debug.Log("matched 2");
+                    Debug.Log(y);
                     return new List<Vector2>
                     {
                         pMaxY, new Vector2(pMinX.x, y), new Vector2(pMaxX.x, y), pMinY
@@ -415,7 +416,7 @@ public class PikachuManager1
 
             }
             // Check top
-            for (int x = 1; x < pMinX.x; x++)
+            for (int x = 1; x <= pMinX.x; x++)
             {
                 /*
                  * 
@@ -434,6 +435,8 @@ public class PikachuManager1
                     check2 != null &&
                     check3 != null)
                 {
+                    Debug.Log("matched 3");
+                    Debug.Log(x);
                     return new List<Vector2>
                     {
                         pMinX, new Vector2(x, pMaxY.y), new Vector2(x, pMinY.y), pMaxX
@@ -460,6 +463,8 @@ public class PikachuManager1
                     check2 != null &&
                     check3 != null)
                 {
+                    Debug.Log("matched 4");
+                    Debug.Log(x);
                     return new List<Vector2>
                     {
                         pMaxY, new Vector2(x, pMinY.y), new Vector2(x, pMinY.y), pMinY
@@ -470,7 +475,119 @@ public class PikachuManager1
         if (pMinX == pMinY &&
             pMaxX == pMaxY)
         {
+            /*
+             * <------pMinX, pMinY
+             * | 
+             * | 
+             * | 
+             * |
+             * |
+             * ------------>pMaxX, pMaxY
+             */
+            for (float y = 1; y <= pMinY.y; y++)
+            {
+                var check1 = CheckX(pMinY, new Vector2(pMinX.x, y - 1));
+                var check2 = CheckY(new Vector2(pMinX.x - 1, y), new Vector2(pMinX.x + 1, y));
+                var check3 = CheckX(new Vector2(pMaxX.x, y - 1), pMaxX);
+                if (check1 != null &&
+                    check2 != null &&
+                    check3 != null)
+                {
+                    Debug.Log("matched 5");
+                    Debug.Log(y);
+                    return new List<Vector2>
+                    {
+                        pMinY, new Vector2(pMinX.x, y), new Vector2(pMaxX.x, y), pMaxY
+                    };
+                }
+            }
+            /*
+             * MinX, MinY--------->
+             *                    | 
+             *                    | 
+             *                    | 
+             *                    |
+             *                    |
+             *      MaxX, MaxY<----
+             */
+            for (float y = pMaxY.y + 1; y < cols; y++)
+            {
+                var check1 = CheckX(pMinY, new Vector2(pMinX.x, y + 1));
+                var check2 = CheckY(new Vector2(pMinX.x - 1, y), new Vector2(pMaxX.x + 1, y));
+                var check3 = CheckX(new Vector2(pMaxX.x, y + 1), pMaxX);
+                if (check1 != null &&
+                    check2 != null &&
+                    check3 != null)
+                {
+                    Debug.Log("matched 6");
+                    Debug.Log(y);
+                    return new List<Vector2>
+                    {
+                        pMinY, new Vector2(pMinX.x, y), new Vector2(pMaxX.x, y), pMaxY
+                    };
+                }
+            }
+            /*
+             * 
+             *       ^----------->
+             *       |            |
+             *       |            |
+             *       |            |
+             *     MinX, MinY     |
+             *                    | 
+             *                    | 
+             *                    | 
+             *                    |
+             *                    |
+             *             MaxX, MaxY
+             */
+            for (int x = 1; x <= pMinX.x; x++)
+            {
+                var check1 = CheckY(pMinX, new Vector2(x - 1, pMinY.y));
+                var check2 = CheckX(new Vector2(x, pMinY.y - 1), new Vector2(x, pMaxY.y + 1));
+                var check3 = CheckY(new Vector2(x - 1, pMaxY.y), pMaxY);
+                if (check1 != null &&
+                    check2 != null &&
+                    check3 != null)
+                {
+                    Debug.Log("matched 7");
+                    Debug.Log(x);
+                    return new List<Vector2>
+                    {
+                        pMinY, new Vector2(x, pMinY.y), new Vector2(x, pMaxY.y), pMaxY
+                    };
+                }
+            }
 
+            /*
+             * 
+             *     MinX, MinY     
+             *     |               
+             *     |                
+             *     |                
+             *     |       MaxX, MaxY
+             *     |          ^
+             *     |          |
+             *     |          |     
+             *     v--------->|
+             */
+            for (float x = pMaxY.x + 1; x < rows; x++)
+            {
+                var check1 = CheckY(pMinX, new Vector2(x + 1, pMinY.y));
+                var check2 = CheckX(new Vector2(x, pMinY.y - 1), new Vector2(x, pMaxY.y + 1));
+                var check3 = CheckY(new Vector2(x -1, pMaxY.y), pMaxY);
+                if (check1 != null &&
+                    check2 != null &&
+                    check3 != null)
+                {
+                    Debug.Log("matched 8");
+                    Debug.Log(x);
+                    return new List<Vector2>
+                    {
+                        pMinY, new Vector2(x, pMinY.y), new Vector2(x, pMaxY.y), pMaxY
+                    };
+                }
+            }
         }
 
         return null;
