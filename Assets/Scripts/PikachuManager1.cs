@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using Unity.Burst.Intrinsics;
+using System.Linq;
 
 public class PikachuManager1
 {
@@ -309,34 +310,34 @@ public class PikachuManager1
         {
             if (p1.y == 1)
             {
-                return new List<Vector2>
+                return ToResponse(new List<Vector2>
                 {
                     p1, new Vector2(p1.x, p1.y - 1), new Vector2(p2.x, p2.y - 1), p2
-                };
+                });
             }
             if (p1.y == cols - 1)
             {
-                return new List<Vector2>
-            {
-                p1, new Vector2(p1.x, p1.y + 1), new Vector2(p2.x, p2.y + 1), p2
-            };
+                return ToResponse(new List<Vector2>
+                {
+                    p1, new Vector2(p1.x, p1.y + 1), new Vector2(p2.x, p2.y + 1), p2
+                });
             }
         }
         if (p1.x == p2.x)
         {
             if (p1.x == 1)
             {
-                return new List<Vector2>
+                return ToResponse(new List<Vector2>
                 {
                     p1, new Vector2(p1.x - 1, p1.y), new Vector2(p2.x - 1, p2.y), p2
-                };
+                });
             }
             if (p1.x == rows - 1)
             {
-                return new List<Vector2>
+                return ToResponse(new List<Vector2>
                 {
                     p1, new Vector2(p1.x + 1, p1.y), new Vector2(p2.x + 1, p2.y), p2
-                };
+                });
             }
         }
         Vector2 pMinX, pMaxX;
@@ -383,10 +384,10 @@ public class PikachuManager1
                 {
                     Debug.Log("matched 1");
                     Debug.Log(y);
-                    return new List<Vector2>
+                    return ToResponse(new List<Vector2>
                     {
                         pMaxY, new Vector2(pMinX.x, y), new Vector2(pMaxX.x, y), pMinY
-                    };
+                    });
                 }
             }
             // Check right
@@ -408,10 +409,10 @@ public class PikachuManager1
                 {
                     Debug.Log("matched 2");
                     Debug.Log(y);
-                    return new List<Vector2>
+                    return ToResponse(new List<Vector2>
                     {
                         pMaxY, new Vector2(pMinX.x, y), new Vector2(pMaxX.x, y), pMinY
-                    };
+                    });
                 }
 
             }
@@ -437,10 +438,10 @@ public class PikachuManager1
                 {
                     Debug.Log("matched 3");
                     Debug.Log(x);
-                    return new List<Vector2>
+                    return ToResponse(new List<Vector2>
                     {
                         pMinX, new Vector2(x, pMaxY.y), new Vector2(x, pMinY.y), pMaxX
-                    };
+                    });
                 }
             }
             // Check bottom
@@ -465,10 +466,10 @@ public class PikachuManager1
                 {
                     Debug.Log("matched 4");
                     Debug.Log(x);
-                    return new List<Vector2>
+                    return ToResponse(new List<Vector2>
                     {
-                        pMaxY, new Vector2(x, pMinY.y), new Vector2(x, pMinY.y), pMinY
-                    };
+                        pMaxY, new Vector2(x, pMaxY.y), new Vector2(x, pMinY.y), pMinY
+                    });
                 }
             }
         }
@@ -495,10 +496,10 @@ public class PikachuManager1
                 {
                     Debug.Log("matched 5");
                     Debug.Log(y);
-                    return new List<Vector2>
+                    return ToResponse(new List<Vector2>
                     {
                         pMinY, new Vector2(pMinX.x, y), new Vector2(pMaxX.x, y), pMaxY
-                    };
+                    });
                 }
             }
             /*
@@ -521,10 +522,10 @@ public class PikachuManager1
                 {
                     Debug.Log("matched 6");
                     Debug.Log(y);
-                    return new List<Vector2>
+                    return ToResponse(new List<Vector2>
                     {
                         pMinY, new Vector2(pMinX.x, y), new Vector2(pMaxX.x, y), pMaxY
-                    };
+                    });
                 }
             }
             /*
@@ -552,10 +553,10 @@ public class PikachuManager1
                 {
                     Debug.Log("matched 7");
                     Debug.Log(x);
-                    return new List<Vector2>
+                    return ToResponse(new List<Vector2>
                     {
                         pMinY, new Vector2(x, pMinY.y), new Vector2(x, pMaxY.y), pMaxY
-                    };
+                    });
                 }
             }
 
@@ -582,14 +583,30 @@ public class PikachuManager1
                 {
                     Debug.Log("matched 8");
                     Debug.Log(x);
-                    return new List<Vector2>
+                    return ToResponse(new List<Vector2>
                     {
                         pMinY, new Vector2(x, pMinY.y), new Vector2(x, pMaxY.y), pMaxY
-                    };
+                    });
                 }
             }
         }
 
         return null;
+    }
+
+    private List<Vector2> ToResponse(List<Vector2> data)
+    {
+        if (data == null ||
+            !data.Any())
+        {
+            return default;
+        }
+        List<Vector2> result = new List<Vector2>();
+        //foreach (var item in data)
+        //{
+        //    result.Add(item - new Vector2(1, 1));
+        //}
+        result = data;
+        return result;
     }
 }

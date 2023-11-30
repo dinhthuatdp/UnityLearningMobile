@@ -37,16 +37,10 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Vector3 v1 = new Vector3(-210, 2000, 0);
-        Vector3 v2 = new Vector3(2000, 350, 0);
-        LineRenderer lineRenderer = _boardGame.gameObject.AddComponent<LineRenderer>();
-        lineRenderer.positionCount = 2;
-        lineRenderer.startColor = Color.red;
-        lineRenderer.endColor = Color.red;
-        lineRenderer.sortingOrder = 1;
-        lineRenderer.SetPositions(new Vector3[] { v1, v2 });
-        //lineRenderer.transform.SetParent(_boardGame.transform, false);
-
+        _lineRenderer = _boardGame.gameObject.AddComponent<LineRenderer>();
+        //Vector3 v1 = new Vector3(-210, 2000, 0);
+        //Vector3 v2 = new Vector3(2000, 350, 0);
+        //DrawLine(new Vector3[] { v1, v2 });
         btnGameType.onClick.AddListener(GameTypeClick);
 
         var outline = _tile.transform.GetComponent<Outline>();
@@ -83,6 +77,18 @@ public class GameController : MonoBehaviour
         }
         //_tilePrefab = Resources.Load<GameObject>("Prefabs/TilePrefab");
         InitGame();
+    }
+    LineRenderer _lineRenderer;
+    private void DrawLine(Vector3[] positions)
+    {
+        _lineRenderer.positionCount = positions.Length;
+        _lineRenderer.startColor = Color.red;
+        _lineRenderer.endColor = Color.red;
+        _lineRenderer.sortingOrder = 1;
+        _lineRenderer.startWidth = 9;
+        _lineRenderer.endWidth = 9;
+        _lineRenderer.SetPositions(positions);
+        //lineRenderer.transform.SetParent(_boardGame.transform, false);
     }
 
 
@@ -282,12 +288,30 @@ public class GameController : MonoBehaviour
         var ss = _pikachuManager.FindPath(FirstPos.Value, new Vector2(row, col));
         if (ss != null)
         {
-            FirstTile.gameObject.SetActive(false);
-            item.gameObject.SetActive(false);
-            item = null;
-            FirstTile = null;
-            FirstPos = null;
-            countMatching += 2;
+            // -210, 350
+            /*
+             *  x = -260 + y * 180
+             *  y = 355 - x * 180"
+             */
+            var positions = ss.Select(x => new Vector3(-260 + (x.y - 1) * (180) + 524, 355 - (x.x - 1) * (180) + 919 + (200 - x.x * 50), 0)).ToArray();
+            foreach (var p in ss)
+            {
+                Debug.Log($"{p.x} - {p.y}");
+            }
+            foreach (var p in positions)
+            {
+                Debug.Log($"{p.x} - {p.y}");
+            }
+            DrawLine(positions);
+            StartCoroutine(_ActionDelay(0.5f, () => {
+                FirstTile.gameObject.SetActive(false);
+                item.gameObject.SetActive(false);
+                item = null;
+                FirstTile = null;
+                FirstPos = null;
+                countMatching += 2;
+                _lineRenderer.positionCount = 0;
+            }));
             if (countMatching >= (rows * columns))
             {
                 popupWin.gameObject.SetActive(true);
